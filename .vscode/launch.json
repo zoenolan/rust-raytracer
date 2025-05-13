@@ -11,11 +11,11 @@
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=ray-tracing",
-                    "--package=ray-tracing"
+                    "--bin=rust-raytracer",
+                    "--package=rust-raytracer"
                 ],
                 "filter": {
-                    "name": "ray-tracing",
+                    "name": "rust-raytracer",
                     "kind": "bin"
                 }
             },
@@ -30,8 +30,8 @@
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=ray-tracing",
-                    "--package=ray-tracing"
+                    "--bin=rust-raytracer",
+                    "--package=rust-raytracer"
                 ],
                 "filter": {
                     "name": "hello-world",
