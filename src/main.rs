@@ -1,10 +1,18 @@
 mod colour;
+mod common;
+mod hittable;
+mod hittable_list;
 mod ray;
+mod sphere;
 mod vec3;
 
-use colour::Colour;
-use ray::Ray;
 use std::io;
+
+use colour::Colour;
+use hittable::{HitRecord, Hittable};
+use hittable_list::HittableList;
+use ray::Ray;
+use sphere::Sphere;
 use vec3::{Point3, Vec3};
 
 fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32 {
@@ -20,11 +28,10 @@ fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32 {
     }
 }
 
-fn ray_color(r: &Ray) -> Colour {
-    let t = hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    if t > 0.0 {
-        let n = vec3::unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0));
-        return 0.5 * Colour::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0);
+fn ray_colour(r: &Ray, world: &dyn Hittable) -> Colour {
+    let mut rec = HitRecord::new();
+    if world.hit(r, 0.0, common::INFINITY, &mut rec) {
+        return 0.5 * (rec.normal + Colour::new(1.0, 1.0, 1.0));
     }
 
     let unit_direction = vec3::unit_vector(r.direction());
@@ -37,6 +44,11 @@ fn main() {
     const ASPECT_RATIO: f32 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as i32;
+
+    // World
+    let mut world = HittableList::new();
+    world.add(Box::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     // Camera
     let viewport_height = 2.0 as f32;
@@ -65,7 +77,7 @@ fn main() {
                 lower_left_corner + u * horizontal + v * vertical - origin,
             );
 
-            let pixel_colour = ray_color(&r);
+            let pixel_colour = ray_colour(&r, &world);
             colour::write_colour(&mut io::stdout(), pixel_colour);
         }
     }
