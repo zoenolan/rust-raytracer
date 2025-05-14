@@ -1,7 +1,4 @@
-use rand::Rng;
-
 // Constants
-
 pub use std::f32::consts::PI;
 pub use std::f32::INFINITY;
 
@@ -13,7 +10,7 @@ pub fn degrees_to_radians(degrees: f32) -> f32 {
 
 pub fn random_float() -> f32 {
     // Return a random real in [0.0, 1.0)
-    rand::thread_rng().gen()
+    rand::random()
 }
 
 pub fn random_float_range(min: f32, max: f32) -> f32 {
