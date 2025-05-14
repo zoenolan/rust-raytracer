@@ -17,19 +17,6 @@ use ray::Ray;
 use sphere::Sphere;
 use vec3::Point3;
 
-fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32 {
-    let oc = r.origin() - center;
-    let a = r.direction().length_squared();
-    let half_b = vec3::dot(oc, r.direction());
-    let c = oc.length_squared() - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        -1.0
-    } else {
-        (-half_b - f32::sqrt(discriminant)) / a
-    }
-}
-
 fn ray_colour(r: &Ray, world: &dyn Hittable, depth: i32) -> Colour {
     // If we've exceeded the ray bounce limit, no more light is gathered
     if depth <= 0 {
